@@ -1,0 +1,4 @@
+pdfplumber
+pip install "camelot-py[cv]"
+PyMuPDF
+pandas
