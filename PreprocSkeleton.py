@@ -11,7 +11,11 @@ class PDFExtractor:
 		for pdf_path in self.pdf_path:
 			with pdfplumber.open(pdf_path) as pdf:
 				for page in pdf.pages:
-					raw_text+= page.extract_text() + "<<END>>\n" + "<<START>>"
+					tables =page.find_tables()
+					table_bounds =[t.bbox for t in tables]
+					text=page.filter(lambda obj: not any(t[0] <= obj["x0"]<=t[2] and t[1]<=obj["top"]<=t[3] for t in table_bounds)).extract_text(x_tolerance=1)
+					#print(f"page num:{page}", table_bounds)
+					raw_text+= text + "<<END>>\n" + "<<START>>"
 		print("text extraction done")
 		#Use Camelot for table extraction 
 		for pdf_path in self.pdf_path:
